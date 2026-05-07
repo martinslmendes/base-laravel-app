@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\TeamRole;
 use Database\Factories\TeamInvitationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,9 @@ use Illuminate\Support\Str;
 class TeamInvitation extends Model
 {
     /** @use HasFactory<TeamInvitationFactory> */
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    protected $primaryKey = 'uuid';
 
     /**
      * Bootstrap the model and its traits.
@@ -37,7 +40,7 @@ class TeamInvitation extends Model
      */
     public function team(): BelongsTo
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(related: Team::class, foreignKey: 'team_id');
     }
 
     /**
@@ -47,7 +50,7 @@ class TeamInvitation extends Model
      */
     public function inviter(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'invited_by');
+        return $this->belongsTo(related: User::class, foreignKey: 'invited_by');
     }
 
     /**

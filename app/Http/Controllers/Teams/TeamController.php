@@ -51,13 +51,13 @@ class TeamController extends Controller
 
         return Inertia::render('teams/edit', [
             'team' => [
-                'id' => $team->id,
+                'uuid' => $team->uuid,
                 'name' => $team->name,
                 'slug' => $team->slug,
                 'isPersonal' => $team->is_personal,
             ],
             'members' => $team->members()->get()->map(fn ($member) => [
-                'id' => $member->id,
+                'uuid' => $member->uuid,
                 'name' => $member->name,
                 'email' => $member->email,
                 'avatar' => $member->avatar ?? null,
@@ -87,7 +87,7 @@ class TeamController extends Controller
         Gate::authorize('update', $team);
 
         $team = DB::transaction(function () use ($request, $team) {
-            $team = Team::whereKey($team->id)->lockForUpdate()->firstOrFail();
+            $team = Team::whereKey($team->uuid)->lockForUpdate()->firstOrFail();
 
             $team->update(['name' => $request->validated('name')]);
 
@@ -122,8 +122,8 @@ class TeamController extends Controller
             : null;
 
         DB::transaction(function () use ($user, $team) {
-            User::where('current_team_id', $team->id)
-                ->where('id', '!=', $user->id)
+            User::where('current_team_id', $team->uuid)
+                ->where('uuid', '!=', $user->uuid)
                 ->each(fn (User $affectedUser) => $affectedUser->switchTeam($affectedUser->personalTeam()));
 
             $team->invitations()->delete();

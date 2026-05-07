@@ -42,7 +42,7 @@ export default function TeamsIndex({ teams }: Props) {
                 <div className="space-y-3">
                     {teams.map((team) => (
                         <div
-                            key={team.id}
+                            key={team.uuid}
                             data-test="team-row"
                             className="flex items-center justify-between rounded-lg border p-4"
                         >

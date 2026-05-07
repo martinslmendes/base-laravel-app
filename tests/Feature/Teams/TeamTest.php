@@ -78,7 +78,7 @@ test('teams can be updated by owners', function () {
     $response->assertRedirect(route('teams.edit', $team->fresh()));
 
     $this->assertDatabaseHas('teams', [
-        'id' => $team->id,
+        'uuid' => $team->uuid,
         'name' => 'Updated Name',
     ]);
 });
@@ -115,7 +115,7 @@ test('teams can be deleted by owners', function () {
     $response->assertRedirect();
 
     $this->assertSoftDeleted('teams', [
-        'id' => $team->id,
+        'uuid' => $team->uuid,
     ]);
 });
 
@@ -134,7 +134,7 @@ test('team deletion requires name confirmation', function () {
     $response->assertSessionHasErrors('name');
 
     $this->assertDatabaseHas('teams', [
-        'id' => $team->id,
+        'uuid' => $team->uuid,
         'deleted_at' => null,
     ]);
 });
@@ -151,7 +151,7 @@ test('deleting current team switches to alphabetically first remaining team', fu
     $betaTeam = Team::factory()->create(['name' => 'Beta Team']);
     $betaTeam->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
-    $user->update(['current_team_id' => $zuluTeam->id]);
+    $user->update(['current_team_id' => $zuluTeam->uuid]);
 
     $response = $this
         ->actingAs($user)
@@ -162,10 +162,10 @@ test('deleting current team switches to alphabetically first remaining team', fu
     $response->assertRedirect();
 
     $this->assertSoftDeleted('teams', [
-        'id' => $zuluTeam->id,
+        'uuid' => $zuluTeam->uuid,
     ]);
 
-    expect($user->fresh()->current_team_id)->toEqual($alphaTeam->id);
+    expect($user->fresh()->current_team_id)->toEqual($alphaTeam->uuid);
 });
 
 test('deleting current team falls back to personal team when alphabetically first', function () {
@@ -174,7 +174,7 @@ test('deleting current team falls back to personal team when alphabetically firs
     $team = Team::factory()->create(['name' => 'Zulu Team']);
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
-    $user->update(['current_team_id' => $team->id]);
+    $user->update(['current_team_id' => $team->uuid]);
 
     $response = $this
         ->actingAs($user)
@@ -185,10 +185,10 @@ test('deleting current team falls back to personal team when alphabetically firs
     $response->assertRedirect();
 
     $this->assertSoftDeleted('teams', [
-        'id' => $team->id,
+        'uuid' => $team->uuid,
     ]);
 
-    expect($user->fresh()->current_team_id)->toEqual($personalTeam->id);
+    expect($user->fresh()->current_team_id)->toEqual($personalTeam->uuid);
 });
 
 test('deleting non current team leaves current team unchanged', function () {
@@ -197,7 +197,7 @@ test('deleting non current team leaves current team unchanged', function () {
     $team = Team::factory()->create();
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
-    $user->update(['current_team_id' => $personalTeam->id]);
+    $user->update(['current_team_id' => $personalTeam->uuid]);
 
     $response = $this
         ->actingAs($user)
@@ -208,10 +208,10 @@ test('deleting non current team leaves current team unchanged', function () {
     $response->assertRedirect();
 
     $this->assertSoftDeleted('teams', [
-        'id' => $team->id,
+        'uuid' => $team->uuid,
     ]);
 
-    expect($user->fresh()->current_team_id)->toEqual($personalTeam->id);
+    expect($user->fresh()->current_team_id)->toEqual($personalTeam->uuid);
 });
 
 test('deleting team switches other affected users to their personal team', function () {
@@ -250,7 +250,7 @@ test('personal teams cannot be deleted', function () {
     $response->assertForbidden();
 
     $this->assertDatabaseHas('teams', [
-        'id' => $personalTeam->id,
+        'uuid' => $personalTeam->uuid,
         'deleted_at' => null,
     ]);
 });
@@ -284,7 +284,7 @@ test('users can switch teams', function () {
 
     $response->assertRedirect();
 
-    expect($user->fresh()->current_team_id)->toEqual($team->id);
+    expect($user->fresh()->current_team_id)->toEqual($team->uuid);
 });
 
 test('users cannot switch to team they dont belong to', function () {

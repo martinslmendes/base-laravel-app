@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TeamRole;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 #[Fillable(['team_id', 'user_id', 'role'])]
 class Membership extends Pivot
 {
+    use HasUuids;
+
     /**
      * The table associated with the model.
      *
@@ -24,6 +27,7 @@ class Membership extends Pivot
      * @var bool
      */
     public $incrementing = true;
+    protected $primaryKey = 'uuid';
 
     /**
      * Get the team that the membership belongs to.
@@ -32,7 +36,7 @@ class Membership extends Pivot
      */
     public function team(): BelongsTo
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(related: Team::class);
     }
 
     /**
@@ -42,7 +46,7 @@ class Membership extends Pivot
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(related: User::class);
     }
 
     /**

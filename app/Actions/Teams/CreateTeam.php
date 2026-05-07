@@ -21,7 +21,7 @@ class CreateTeam
             ]);
 
             $membership = $team->memberships()->create([
-                'user_id' => $user->id,
+                'user_id' => $user->uuid,
                 'role' => TeamRole::Owner,
             ]);
 

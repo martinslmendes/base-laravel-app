@@ -21,7 +21,7 @@ trait GeneratesUniqueTeamSlugs
             });
 
         if ($excludeId) {
-            $query->where('id', '!=', $excludeId);
+            $query->where('uuid', '!=', $excludeId);
         }
 
         $existingSlugs = $query->pluck('slug');

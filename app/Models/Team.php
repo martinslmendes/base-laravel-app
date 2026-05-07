@@ -6,6 +6,7 @@ use App\Concerns\GeneratesUniqueTeamSlugs;
 use App\Enums\TeamRole;
 use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,7 +17,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Team extends Model
 {
     /** @use HasFactory<TeamFactory> */
-    use GeneratesUniqueTeamSlugs, HasFactory, SoftDeletes;
+    use GeneratesUniqueTeamSlugs, HasFactory, HasUuids, SoftDeletes;
+
+    protected $primaryKey = 'uuid';
 
     /**
      * Bootstrap the model and its traits.
@@ -55,7 +58,7 @@ class Team extends Model
      */
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'team_members', 'team_id', 'user_id')
+        return $this->belongsToMany(related: User::class, table: 'team_members', foreignPivotKey: 'team_id', relatedPivotKey: 'user_id')
             ->using(Membership::class)
             ->withPivot(['role'])
             ->withTimestamps();
@@ -68,7 +71,7 @@ class Team extends Model
      */
     public function memberships(): HasMany
     {
-        return $this->hasMany(Membership::class);
+        return $this->hasMany(related: Membership::class, foreignKey: 'team_id');
     }
 
     /**
@@ -78,7 +81,7 @@ class Team extends Model
      */
     public function invitations(): HasMany
     {
-        return $this->hasMany(TeamInvitation::class);
+        return $this->hasMany(related: TeamInvitation::class, foreignKey: 'team_id');
     }
 
     /**

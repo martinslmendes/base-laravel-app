@@ -111,7 +111,7 @@ export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
                 </DropdownMenuLabel>
                 {teams.map((team) => (
                     <DropdownMenuItem
-                        key={team.id}
+                        key={team.uuid}
                         data-test="team-switcher-item"
                         className={
                             inHeader
@@ -121,7 +121,7 @@ export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
                         onSelect={() => switchTeam(team)}
                     >
                         {team.name}
-                        {currentTeam?.id === team.id && (
+                        {currentTeam?.uuid === team.uuid && (
                             <Check
                                 className={
                                     inHeader

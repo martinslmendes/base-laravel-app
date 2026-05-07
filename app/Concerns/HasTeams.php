@@ -24,8 +24,12 @@ trait HasTeams
      */
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class, 'team_members', 'user_id', 'team_id')
-            ->withPivot(['role'])
+        return $this->belongsToMany(
+            related: Team::class,
+            table: 'team_members',
+            foreignPivotKey: 'user_id',
+            relatedPivotKey: 'team_id'
+        )->withPivot(['role'])
             ->withTimestamps();
     }
 
@@ -37,12 +41,12 @@ trait HasTeams
     public function ownedTeams(): HasManyThrough
     {
         return $this->hasManyThrough(
-            Team::class,
-            Membership::class,
-            'user_id',
-            'id',
-            'id',
-            'team_id',
+            related: Team::class,
+            through: Membership::class,
+            firstKey: 'user_id',
+            secondKey: 'uuid',
+            localKey: 'uuid',
+            secondLocalKey: 'team_id',
         )->where('team_members.role', TeamRole::Owner->value);
     }
 
@@ -53,7 +57,7 @@ trait HasTeams
      */
     public function teamMemberships(): HasMany
     {
-        return $this->hasMany(Membership::class, 'user_id');
+        return $this->hasMany(related: Membership::class, foreignKey: 'user_id');
     }
 
     /**
@@ -63,7 +67,7 @@ trait HasTeams
      */
     public function currentTeam(): BelongsTo
     {
-        return $this->belongsTo(Team::class, 'current_team_id');
+        return $this->belongsTo(related: Team::class, foreignKey: 'current_team_id');
     }
 
     /**
@@ -85,7 +89,7 @@ trait HasTeams
             return false;
         }
 
-        $this->update(['current_team_id' => $team->id]);
+        $this->update(['current_team_id' => $team->uuid]);
         $this->setRelation('currentTeam', $team);
 
         URL::defaults(['current_team' => $team->slug]);
@@ -98,7 +102,7 @@ trait HasTeams
      */
     public function belongsToTeam(Team $team): bool
     {
-        return $this->teams()->where('teams.id', $team->id)->exists();
+        return $this->teams()->where('teams.uuid', $team->uuid)->exists();
     }
 
     /**
@@ -106,7 +110,7 @@ trait HasTeams
      */
     public function isCurrentTeam(Team $team): bool
     {
-        return $this->current_team_id === $team->id;
+        return $this->current_team_id === $team->uuid;
     }
 
     /**
@@ -123,7 +127,7 @@ trait HasTeams
     public function teamRole(Team $team): ?TeamRole
     {
         return $this->teamMemberships()
-            ->where('team_id', $team->id)
+            ->where('team_id', $team->uuid)
             ->first()
             ?->role;
     }
@@ -150,7 +154,7 @@ trait HasTeams
         $role = $this->teamRole($team);
 
         return new UserTeam(
-            id: $team->id,
+            uuid: $team->uuid,
             name: $team->name,
             slug: $team->slug,
             isPersonal: $team->is_personal,
@@ -181,7 +185,7 @@ trait HasTeams
     public function fallbackTeam(?Team $excluding = null): ?Team
     {
         return $this->teams()
-            ->when($excluding, fn ($query) => $query->where('teams.id', '!=', $excluding->id))
+            ->when($excluding, fn ($query) => $query->where('teams.uuid', '!=', $excluding->id))
             ->orderByRaw('LOWER(teams.name)')
             ->first();
     }

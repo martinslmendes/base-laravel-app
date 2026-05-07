@@ -11,34 +11,34 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('teams', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->boolean('is_personal')->default(false);
+        Schema::create(table: 'teams', callback: function (Blueprint $table) {
+            $table->uuid()->primary();
+            $table->string(column: 'name');
+            $table->string(column: 'slug')->unique();
+            $table->boolean(column: 'is_personal')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::create('team_members', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('role');
+        Schema::create(table: 'team_members', callback: function (Blueprint $table) {
+            $table->uuid()->primary();
+            $table->foreignUuid(column: 'team_id')->constrained(table: 'teams', column: 'uuid')->cascadeOnDelete();
+            $table->foreignUuid(column: 'user_id')->constrained(table: 'users', column: 'uuid')->cascadeOnDelete();
+            $table->string(column: 'role');
             $table->timestamps();
 
             $table->unique(['team_id', 'user_id']);
         });
 
-        Schema::create('team_invitations', function (Blueprint $table) {
-            $table->id();
-            $table->string('code', 64)->unique();
-            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
-            $table->string('email');
-            $table->string('role');
-            $table->foreignId('invited_by')->constrained('users')->cascadeOnDelete();
-            $table->timestamp('expires_at')->nullable();
-            $table->timestamp('accepted_at')->nullable();
+        Schema::create(table: 'team_invitations', callback: function (Blueprint $table) {
+            $table->uuid()->primary();
+            $table->string(column: 'code', length: 64)->unique();
+            $table->foreignUuid(column: 'team_id')->constrained(table: 'teams', column: 'uuid')->cascadeOnDelete();
+            $table->string(column: 'email');
+            $table->string(column: 'role');
+            $table->foreignUuid(column: 'invited_by')->constrained(table: 'users', column: 'uuid')->cascadeOnDelete();
+            $table->timestamp(column: 'expires_at')->nullable();
+            $table->timestamp(column: 'accepted_at')->nullable();
             $table->timestamps();
         });
     }
@@ -48,8 +48,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('team_invitations');
-        Schema::dropIfExists('team_members');
-        Schema::dropIfExists('teams');
+        Schema::dropIfExists(table: 'team_invitations');
+        Schema::dropIfExists(table: 'team_members');
+        Schema::dropIfExists(table: 'teams');
     }
 };

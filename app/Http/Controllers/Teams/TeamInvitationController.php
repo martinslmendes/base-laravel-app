@@ -27,7 +27,7 @@ class TeamInvitationController extends Controller
         $invitation = $team->invitations()->create([
             'email' => $request->validated('email'),
             'role' => TeamRole::from($request->validated('role')),
-            'invited_by' => $request->user()->id,
+            'invited_by' => $request->user()->uuid,
             'expires_at' => now()->addDays(3),
         ]);
 
@@ -44,7 +44,7 @@ class TeamInvitationController extends Controller
      */
     public function destroy(Team $team, TeamInvitation $invitation): RedirectResponse
     {
-        abort_unless($invitation->team_id === $team->id, 404);
+        abort_unless($invitation->team_id === $team->uuid, 404);
 
         Gate::authorize('cancelInvitation', $team);
 
@@ -66,7 +66,7 @@ class TeamInvitationController extends Controller
             $team = $invitation->team;
 
             $membership = $team->memberships()->firstOrCreate(
-                ['user_id' => $user->id],
+                ['user_id' => $user->uuid],
                 ['role' => $invitation->role],
             );
 

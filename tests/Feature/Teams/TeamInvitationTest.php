@@ -24,7 +24,7 @@ test('team invitations can be created', function () {
     $response->assertRedirect(route('teams.edit', $team));
 
     $this->assertDatabaseHas('team_invitations', [
-        'team_id' => $team->id,
+        'team_id' => $team->uuid,
         'email' => 'invited@example.com',
         'role' => TeamRole::Member->value,
     ]);
@@ -78,9 +78,9 @@ test('duplicate invitations cannot be created', function () {
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
 
     TeamInvitation::factory()->create([
-        'team_id' => $team->id,
+        'team_id' => $team->uuid,
         'email' => 'invited@example.com',
-        'invited_by' => $owner->id,
+        'invited_by' => $owner->uuid,
     ]);
 
     $response = $this
@@ -118,8 +118,8 @@ test('team invitations can be cancelled by owners', function () {
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
 
     $invitation = TeamInvitation::factory()->create([
-        'team_id' => $team->id,
-        'invited_by' => $owner->id,
+        'team_id' => $team->uuid,
+        'invited_by' => $owner->uuid,
     ]);
 
     $response = $this
@@ -141,10 +141,10 @@ test('team invitations can be accepted', function () {
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
 
     $invitation = TeamInvitation::factory()->create([
-        'team_id' => $team->id,
+        'team_id' => $team->uuid,
         'email' => 'invited@example.com',
         'role' => TeamRole::Member,
-        'invited_by' => $owner->id,
+        'invited_by' => $owner->uuid,
     ]);
 
     $response = $this
@@ -165,9 +165,9 @@ test('team invitations cannot be accepted by uninvited user', function () {
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
 
     $invitation = TeamInvitation::factory()->create([
-        'team_id' => $team->id,
+        'team_id' => $team->uuid,
         'email' => 'invited@example.com',
-        'invited_by' => $owner->id,
+        'invited_by' => $owner->uuid,
     ]);
 
     $response = $this
@@ -187,9 +187,9 @@ test('expired invitations cannot be accepted', function () {
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
 
     $invitation = TeamInvitation::factory()->expired()->create([
-        'team_id' => $team->id,
+        'team_id' => $team->uuid,
         'email' => 'invited@example.com',
-        'invited_by' => $owner->id,
+        'invited_by' => $owner->uuid,
     ]);
 
     $response = $this

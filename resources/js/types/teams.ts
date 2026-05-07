@@ -1,7 +1,7 @@
 export type TeamRole = 'owner' | 'admin' | 'member';
 
 export type Team = {
-    id: number;
+    uuid: string;
     name: string;
     slug: string;
     isPersonal: boolean;
@@ -11,7 +11,7 @@ export type Team = {
 };
 
 export type TeamMember = {
-    id: number;
+    uuid: string;
     name: string;
     email: string;
     avatar?: string | null;

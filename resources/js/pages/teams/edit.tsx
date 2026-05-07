@@ -72,7 +72,7 @@ export default function TeamEdit({
     );
 
     const updateMemberRole = (member: TeamMember, newRole: string) => {
-        router.visit(updateMember([team.slug, member.id]), {
+        router.visit(updateMember([team.slug, member.uuid]), {
             data: { role: newRole },
             preserveScroll: true,
         });
@@ -169,7 +169,7 @@ export default function TeamEdit({
                     <div className="space-y-3">
                         {members.map((member) => (
                             <div
-                                key={member.id}
+                                key={member.uuid}
                                 data-test="member-row"
                                 className="flex items-center justify-between rounded-lg border p-4"
                             >

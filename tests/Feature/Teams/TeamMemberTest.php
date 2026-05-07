@@ -20,7 +20,7 @@ test('team member roles can be updated by owners', function () {
 
     $response->assertRedirect(route('teams.edit', $team));
 
-    expect($team->members()->where('user_id', $member->id)->first()->pivot->role->value)->toEqual(TeamRole::Admin->value);
+    expect($team->members()->where('user_id', $member->uuid)->first()->pivot->role->value)->toEqual(TeamRole::Admin->value);
 });
 
 test('team member roles cannot be updated by non owners', function () {
@@ -107,7 +107,7 @@ test('team member role cannot be set to owner', function () {
 
     $response->assertSessionHasErrors('role');
 
-    expect($team->members()->where('user_id', $member->id)->first()->pivot->role->value)->toEqual(TeamRole::Member->value);
+    expect($team->members()->where('user_id', $member->uuid)->first()->pivot->role->value)->toEqual(TeamRole::Member->value);
 });
 
 test('removed member current team is set to personal team', function () {
