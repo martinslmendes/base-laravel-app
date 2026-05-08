@@ -1,3 +1,21 @@
 {
-    "Dashboard": "Painel"
+    "Already have an account?": "Já possui uma conta?",
+    "Confirm password": "Confirmar senha",
+    "Create account": "Criar conta",
+    "Create an account": "Criar uma conta",
+    "Dashboard": "Painel",
+    "Don't have an account?": "Não possui uma conta?",
+    "Email address": "Endereço de e-mail",
+    "Enter your details below to create your account": "Digite seus detalhes abaixo para criar sua conta",
+    "Enter your email and password below to log in": "Digite seu e-mail e senha abaixo para entrar",
+    "Forgot password?": "Esqueceu a senha?",
+    "Full name": "Nome completo",
+    "Log in": "Entrar",
+    "Log in to your account": "Entrar na sua conta",
+    "Name": "Nome",
+    "Password": "Senha",
+    "Register": "Cadastrar",
+    "Remember me": "Lembre-se de mim",
+    "Sign up": "Cadastrar",
+    "Reset password": "Redefinir senha"
 }
