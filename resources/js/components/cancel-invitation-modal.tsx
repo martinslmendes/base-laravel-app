@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -26,6 +27,7 @@ export default function CancelInvitationModal({
     open,
     onOpenChange,
 }: Props) {
+    const { t } = useTranslation();
     const [processing, setProcessing] = useState(false);
 
     const cancelInvitation = () => {
@@ -44,16 +46,20 @@ export default function CancelInvitationModal({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Cancel invitation</DialogTitle>
+                    <DialogTitle>{t('Cancel invitation')}</DialogTitle>
                     <DialogDescription>
-                        Are you sure you want to cancel the invitation for{' '}
+                        {t(
+                            'Are you sure you want to cancel the invitation for',
+                        )}{' '}
                         <strong>{invitation?.email}</strong>?
                     </DialogDescription>
                 </DialogHeader>
 
                 <DialogFooter className="gap-2">
                     <DialogClose asChild>
-                        <Button variant="secondary">Keep invitation</Button>
+                        <Button variant="secondary">
+                            {t('Keep invitation')}
+                        </Button>
                     </DialogClose>
 
                     <Button
@@ -62,7 +68,7 @@ export default function CancelInvitationModal({
                         disabled={processing}
                         onClick={cancelInvitation}
                     >
-                        Cancel invitation
+                        {t('Cancel invitation')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -1,5 +1,6 @@
 import { Form } from '@inertiajs/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,6 +37,7 @@ export default function InviteMemberModal({
     open,
     onOpenChange,
 }: Props) {
+    const { t } = useTranslation();
     const [inviteRole, setInviteRole] = useState<RoleOption['value']>('member');
 
     const handleOpenChange = (nextOpen: boolean) => {
@@ -58,15 +60,19 @@ export default function InviteMemberModal({
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
-                                <DialogTitle>Invite a team member</DialogTitle>
+                                <DialogTitle>
+                                    {t('Invite a team member')}
+                                </DialogTitle>
                                 <DialogDescription>
-                                    Send an invitation to join this team.
+                                    {t('Send an invitation to join this team.')}
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
+                                    <Label htmlFor="email">
+                                        {t('Email address')}
+                                    </Label>
                                     <Input
                                         id="email"
                                         name="email"
@@ -79,7 +85,7 @@ export default function InviteMemberModal({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="role">Role</Label>
+                                    <Label htmlFor="role">{t('Role')}</Label>
                                     <Select
                                         name="role"
                                         data-test="invite-role"
@@ -91,7 +97,9 @@ export default function InviteMemberModal({
                                         }
                                     >
                                         <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select a role" />
+                                            <SelectValue
+                                                placeholder={t('Select a role')}
+                                            />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {availableRoles.map((role) => (
@@ -110,7 +118,9 @@ export default function InviteMemberModal({
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Cancel</Button>
+                                    <Button variant="secondary">
+                                        {t('Cancel')}
+                                    </Button>
                                 </DialogClose>
 
                                 <Button
@@ -118,7 +128,7 @@ export default function InviteMemberModal({
                                     data-test="invite-submit"
                                     disabled={processing}
                                 >
-                                    Send invitation
+                                    {t('Send invitation')}
                                 </Button>
                             </DialogFooter>
                         </>
