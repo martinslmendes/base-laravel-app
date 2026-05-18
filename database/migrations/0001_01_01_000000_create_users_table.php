@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamp(column: 'two_factor_confirmed_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create(table: 'password_reset_tokens', callback: function (Blueprint $table) {
