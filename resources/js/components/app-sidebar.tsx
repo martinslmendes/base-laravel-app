@@ -5,6 +5,7 @@ import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { TeamSwitcher } from '@/components/team-switcher';
+import { TenantSwitcher } from '@/components/tenant-switcher';
 import {
     Sidebar,
     SidebarContent,
@@ -57,6 +58,9 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                 </SidebarMenu>
                 <SidebarMenu>
+                    <SidebarMenuItem>
+                        <TenantSwitcher />
+                    </SidebarMenuItem>
                     <SidebarMenuItem>
                         <TeamSwitcher />
                     </SidebarMenuItem>
