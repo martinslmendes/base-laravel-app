@@ -10,6 +10,18 @@ import './i18n';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
+    defaults: {
+        visitOptions: (href, options) => {
+            const tenant = localStorage.getItem('tenant');
+
+            return {
+                headers: {
+                    ...options.headers,
+                    ...(tenant ? { 'X-Tenant': tenant } : {}),
+                },
+            };
+        },
+    },
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
