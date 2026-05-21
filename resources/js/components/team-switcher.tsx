@@ -12,6 +12,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import { switchMethod } from '@/routes/teams';
 import type { Team } from '@/types';
 
@@ -66,11 +67,10 @@ export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
                     }
                 >
                     <Users
-                        className={
-                            inHeader
-                                ? 'hidden'
-                                : 'hidden size-4 shrink-0 group-data-[collapsible=icon]:block'
-                        }
+                        className={cn(
+                            !inHeader &&
+                                'size-4 shrink-0 group-data-[collapsible=icon]:block',
+                        )}
                     />
                     <div
                         className={
@@ -82,7 +82,7 @@ export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
                         <span
                             className={
                                 inHeader
-                                    ? 'max-w-[120px] truncate font-medium'
+                                    ? 'max-w-30 truncate font-medium'
                                     : 'truncate font-semibold'
                             }
                         >

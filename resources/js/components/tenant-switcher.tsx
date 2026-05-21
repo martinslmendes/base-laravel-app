@@ -1,5 +1,5 @@
 import { router, usePage } from '@inertiajs/react';
-import { Check, ChevronsUpDown, Users } from 'lucide-react';
+import { Building, Check, ChevronsUpDown, UserLock } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import type { Tenant } from '@/types';
 
 type TenantSwitcherProps = {
@@ -54,12 +55,11 @@ export function TenantSwitcher({ inHeader = false }: TenantSwitcherProps) {
                             : 'w-full justify-start px-2 has-[>svg]:px-2 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                     }
                 >
-                    <Users
-                        className={
-                            inHeader
-                                ? 'hidden'
-                                : 'hidden size-4 shrink-0 group-data-[collapsible=icon]:block'
-                        }
+                    <Building
+                        className={cn(
+                            !inHeader &&
+                                'size-4 shrink-0 group-data-[collapsible=icon]:block',
+                        )}
                     />
                     <div
                         className={
@@ -109,6 +109,7 @@ export function TenantSwitcher({ inHeader = false }: TenantSwitcherProps) {
                     }
                     onSelect={() => switchToLandlord()}
                 >
+                    <UserLock />
                     {t('Landlord')}
                     {currentTenant === undefined && (
                         <Check
