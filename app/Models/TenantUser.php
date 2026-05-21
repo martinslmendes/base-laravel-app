@@ -22,6 +22,7 @@ class TenantUser extends Authenticatable implements Syncable
     /** @use HasFactory<TenantUserFactory> */
     use HasFactory, HasTeams, HasUuids, Notifiable, ResourceSyncing, SoftDeletes, TwoFactorAuthenticatable;
 
+    protected $keyType = 'string';
     protected $primaryKey = 'uuid';
     protected $table = 'users';
 

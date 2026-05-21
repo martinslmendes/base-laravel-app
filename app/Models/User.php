@@ -25,6 +25,7 @@ class User extends Authenticatable implements SyncMaster
     /** @use HasFactory<UserFactory> */
     use CentralConnection, HasFactory, HasTeams, HasUuids, Notifiable, ResourceSyncing, SoftDeletes, TwoFactorAuthenticatable;
 
+    protected $keyType = 'string';
     protected $primaryKey = 'uuid';
 
     /**
