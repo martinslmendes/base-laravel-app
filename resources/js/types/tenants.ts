@@ -1,4 +1,7 @@
 export type Tenant = {
     id: string;
-    name: string; // TODO create name attribute in back-end
+    name: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string;
 };

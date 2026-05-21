@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\TenantUser;
+use App\Models\User;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -104,6 +107,20 @@ class TenancyServiceProvider extends ServiceProvider
         $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
+
+        Event::listen(Events\TenancyInitialized::class, function () {
+            config(['auth.providers.users.model' => TenantUser::class]);
+            if (Auth::guard('web')->check()) {
+                Auth::guard('web')->forgetUser();
+            }
+        });
+
+        Event::listen(Events\TenancyEnded::class, function () {
+            config(['auth.providers.users.model' => User::class]);
+            if (Auth::guard('web')->check()) {
+                Auth::guard('web')->forgetUser();
+            }
+        });
     }
 
     protected function bootEvents(): void

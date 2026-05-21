@@ -1,6 +1,5 @@
 import { router, usePage } from '@inertiajs/react';
 import { Building, Check, ChevronsUpDown, UserLock } from 'lucide-react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,28 +17,20 @@ type TenantSwitcherProps = {
     inHeader?: boolean;
 };
 
-type PageProps = {
-    currentTenant?: Tenant;
-    tenants: Tenant[];
-};
-
 export function TenantSwitcher({ inHeader = false }: TenantSwitcherProps) {
     const { t } = useTranslation();
+    const page = usePage();
     const isMobile = useIsMobile();
-    const { tenants } = usePage<PageProps>().props;
-    const [currentTenant, setCurrentTenant] = useState<Tenant | undefined>(
-        usePage<PageProps>().props.currentTenant,
-    );
+    const tenants = page.props.tenants ?? [];
+    const currentTenant = page.props.currentTenant;
 
     const switchTenant = (tenant: Tenant) => {
         localStorage.setItem('X-Tenant', tenant.id);
-        setCurrentTenant(tenant);
         router.reload();
     };
 
     const switchToLandlord = () => {
         localStorage.removeItem('X-Tenant');
-        setCurrentTenant(undefined);
         router.reload();
     };
 

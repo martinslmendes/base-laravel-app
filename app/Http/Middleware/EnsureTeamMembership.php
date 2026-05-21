@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\TeamRole;
 use App\Models\Team;
+use App\Models\TenantUser;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class EnsureTeamMembership
     /**
      * Ensure the given user has at least the given role, if applicable.
      */
-    protected function ensureTeamMemberHasRequiredRole(User $user, Team $team, ?string $minimumRole): void
+    protected function ensureTeamMemberHasRequiredRole(User|TenantUser $user, Team $team, ?string $minimumRole): void
     {
         if ($minimumRole === null) {
             return;
