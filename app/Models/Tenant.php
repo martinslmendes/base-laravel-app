@@ -25,4 +25,14 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             relatedKey: 'uuid'
         )->using(class: TenantPivot::class);
     }
+
+    public static function getCustomColumns(): array
+    {
+        return [
+            'id',
+            'name',
+            'created_at',
+            'updated_at',
+        ];
+    }
 }

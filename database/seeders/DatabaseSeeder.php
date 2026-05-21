@@ -21,7 +21,10 @@ class DatabaseSeeder extends Seeder
         $tenant_ids = ['foo', 'bar'];
 
         foreach ($tenant_ids as $tenant_id) {
-            $tenant = Tenant::create(['id' => $tenant_id]);
+            $tenant = Tenant::create([
+                'id' => $tenant_id,
+                'name' => $tenant_id,
+            ]);
             $tenant->domains()->create(['domain' => $tenant_id]);
         }
     }

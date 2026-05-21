@@ -12,7 +12,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 createInertiaApp({
     defaults: {
         visitOptions: (href, options) => {
-            const tenant = localStorage.getItem('tenant');
+            const tenant = localStorage.getItem('X-Tenant');
 
             return {
                 headers: {

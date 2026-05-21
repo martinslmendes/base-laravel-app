@@ -1,5 +1,6 @@
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Check, ChevronsUpDown, Users } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,10 +25,21 @@ type PageProps = {
 export function TenantSwitcher({ inHeader = false }: TenantSwitcherProps) {
     const { t } = useTranslation();
     const isMobile = useIsMobile();
-    const { currentTenant, tenants } = usePage<PageProps>().props;
+    const { tenants } = usePage<PageProps>().props;
+    const [currentTenant, setCurrentTenant] = useState<Tenant | undefined>(
+        usePage<PageProps>().props.currentTenant,
+    );
 
-    const switchTenant = (tenant) => {
-        // TODO
+    const switchTenant = (tenant: Tenant) => {
+        localStorage.setItem('X-Tenant', tenant.id);
+        setCurrentTenant(tenant);
+        router.reload();
+    };
+
+    const switchToLandlord = () => {
+        localStorage.removeItem('X-Tenant');
+        setCurrentTenant(undefined);
+        router.reload();
     };
 
     return (
@@ -63,7 +75,7 @@ export function TenantSwitcher({ inHeader = false }: TenantSwitcherProps) {
                                     : 'truncate font-semibold'
                             }
                         >
-                            {currentTenant?.name ?? t('Select tenant')}
+                            {currentTenant?.name ?? t('Landlord')}
                         </span>
                     </div>
                     <ChevronsUpDown
@@ -88,6 +100,24 @@ export function TenantSwitcher({ inHeader = false }: TenantSwitcherProps) {
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
                     {t('Tenants')}
                 </DropdownMenuLabel>
+                <DropdownMenuItem
+                    data-test="tenant-switcher-item"
+                    className={
+                        inHeader
+                            ? 'cursor-pointer gap-2'
+                            : 'cursor-pointer gap-2 p-2'
+                    }
+                    onSelect={() => switchToLandlord()}
+                >
+                    {t('Landlord')}
+                    {currentTenant === undefined && (
+                        <Check
+                            className={
+                                inHeader ? 'ml-auto size-4' : 'ml-auto h-4 w-4'
+                            }
+                        />
+                    )}
+                </DropdownMenuItem>
                 {tenants.map((tenant) => (
                     <DropdownMenuItem
                         key={tenant.id}
