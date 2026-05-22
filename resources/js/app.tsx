@@ -13,11 +13,13 @@ createInertiaApp({
     defaults: {
         visitOptions: (href, options) => {
             const tenant = localStorage.getItem('X-Tenant');
+            const locale = localStorage.getItem('locale');
 
             return {
                 headers: {
                     ...options.headers,
                     ...(tenant ? { 'X-Tenant': tenant } : {}),
+                    locale: locale ?? 'en',
                 },
             };
         },

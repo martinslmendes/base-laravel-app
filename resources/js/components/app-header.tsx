@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import AppLogo from '@/components/app-logo';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { TeamSwitcher } from '@/components/team-switcher';
 import { TenantSwitcher } from '@/components/tenant-switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -245,6 +246,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
 
                         <TenantSwitcher inHeader />
                         <TeamSwitcher inHeader />
+                        <LanguageSwitcher inHeader />
                     </div>
                 </div>
             </div>
