@@ -287,7 +287,7 @@ test('users can switch teams', function () {
     expect($user->fresh()->current_team_id)->toEqual($team->uuid);
 });
 
-test('users cannot switch to team they dont belong to', function () {
+test('users are redirected to personal team when trying to switch to team they dont belong to', function () {
     $user = User::factory()->create();
     $team = Team::factory()->create();
 
@@ -295,7 +295,7 @@ test('users cannot switch to team they dont belong to', function () {
         ->actingAs($user)
         ->post(route('teams.switch', $team));
 
-    $response->assertForbidden();
+    $response->assertRedirectToRoute('dashboard');
 });
 
 test('guests cannot access teams', function () {
