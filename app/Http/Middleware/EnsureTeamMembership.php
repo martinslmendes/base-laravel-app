@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\TeamRole;
 use App\Models\Team;
+use App\Models\TenantUser;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
@@ -20,7 +21,11 @@ class EnsureTeamMembership
     {
         [$user, $team] = [$request->user(), $this->team($request)];
 
-        abort_if(! $user || ! $team || ! $user->belongsToTeam($team), 403);
+        abort_if(! $user, 403);
+
+        if (! $team || ! $user->belongsToTeam($team)) {
+            return to_route('dashboard', ['current_team' => $user->personalTeam()]);
+        }
 
         $this->ensureTeamMemberHasRequiredRole($user, $team, $minimumRole);
 
@@ -34,7 +39,7 @@ class EnsureTeamMembership
     /**
      * Ensure the given user has at least the given role, if applicable.
      */
-    protected function ensureTeamMemberHasRequiredRole(User $user, Team $team, ?string $minimumRole): void
+    protected function ensureTeamMemberHasRequiredRole(User|TenantUser $user, Team $team, ?string $minimumRole): void
     {
         if ($minimumRole === null) {
             return;

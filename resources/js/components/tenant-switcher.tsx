@@ -1,57 +1,37 @@
 import { router, usePage } from '@inertiajs/react';
-import { Check, ChevronsUpDown, Plus, Users } from 'lucide-react';
+import { Building, Check, ChevronsUpDown, UserLock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import CreateTeamModal from '@/components/create-team-modal';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { switchMethod } from '@/routes/teams';
-import type { Team } from '@/types';
+import type { Tenant } from '@/types';
 
-type TeamSwitcherProps = {
+type TenantSwitcherProps = {
     inHeader?: boolean;
 };
 
-export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
+export function TenantSwitcher({ inHeader = false }: TenantSwitcherProps) {
     const { t } = useTranslation();
     const page = usePage();
     const isMobile = useIsMobile();
-    const currentTeam = page.props.currentTeam;
-    const teams = page.props.teams ?? [];
+    const tenants = page.props.tenants ?? [];
+    const currentTenant = page.props.currentTenant;
 
-    const switchTeam = (team: Team) => {
-        const previousTeamSlug = currentTeam?.slug;
+    const switchTenant = (tenant: Tenant) => {
+        localStorage.setItem('X-Tenant', tenant.id);
+        router.reload();
+    };
 
-        router.visit(switchMethod(team.slug), {
-            onFinish: () => {
-                if (!previousTeamSlug || typeof window === 'undefined') {
-                    router.reload();
-
-                    return;
-                }
-
-                const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-                const segment = `/${previousTeamSlug}`;
-
-                if (currentUrl.includes(segment)) {
-                    router.visit(currentUrl.replace(segment, `/${team.slug}`), {
-                        replace: true,
-                    });
-
-                    return;
-                }
-
-                router.reload();
-            },
-        });
+    const switchToLandlord = () => {
+        localStorage.removeItem('X-Tenant');
+        router.reload();
     };
 
     return (
@@ -59,14 +39,14 @@ export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="ghost"
-                    data-test="team-switcher-trigger"
+                    data-test="tenant-switcher-trigger"
                     className={
                         inHeader
                             ? 'h-8 gap-1 px-2'
                             : 'w-full justify-start px-2 has-[>svg]:px-2 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                     }
                 >
-                    <Users
+                    <Building
                         className={cn(
                             !inHeader &&
                                 'size-4 shrink-0 group-data-[collapsible=icon]:block',
@@ -86,7 +66,7 @@ export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
                                     : 'truncate font-semibold'
                             }
                         >
-                            {currentTeam?.name ?? t('Select team')}
+                            {currentTenant?.name ?? t('Landlord')}
                         </span>
                     </div>
                     <ChevronsUpDown
@@ -109,21 +89,40 @@ export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
                 sideOffset={inHeader ? undefined : 4}
             >
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
-                    {t('Teams')}
+                    {t('Tenants')}
                 </DropdownMenuLabel>
-                {teams.map((team) => (
+                <DropdownMenuItem
+                    data-test="tenant-switcher-item"
+                    className={
+                        inHeader
+                            ? 'cursor-pointer gap-2'
+                            : 'cursor-pointer gap-2 p-2'
+                    }
+                    onSelect={() => switchToLandlord()}
+                >
+                    <UserLock />
+                    {t('Landlord')}
+                    {currentTenant === undefined && (
+                        <Check
+                            className={
+                                inHeader ? 'ml-auto size-4' : 'ml-auto h-4 w-4'
+                            }
+                        />
+                    )}
+                </DropdownMenuItem>
+                {tenants.map((tenant) => (
                     <DropdownMenuItem
-                        key={team.uuid}
-                        data-test="team-switcher-item"
+                        key={tenant.id}
+                        data-test="tenant-switcher-item"
                         className={
                             inHeader
                                 ? 'cursor-pointer gap-2'
                                 : 'cursor-pointer gap-2 p-2'
                         }
-                        onSelect={() => switchTeam(team)}
+                        onSelect={() => switchTenant(tenant)}
                     >
-                        {team.name}
-                        {currentTeam?.uuid === team.uuid && (
+                        {tenant.name}
+                        {currentTenant?.id === tenant.id && (
                             <Check
                                 className={
                                     inHeader
@@ -134,23 +133,6 @@ export function TeamSwitcher({ inHeader = false }: TeamSwitcherProps) {
                         )}
                     </DropdownMenuItem>
                 ))}
-                <DropdownMenuSeparator />
-                <CreateTeamModal>
-                    <DropdownMenuItem
-                        data-test="team-switcher-new-team"
-                        className={
-                            inHeader
-                                ? 'cursor-pointer gap-2'
-                                : 'cursor-pointer gap-2 p-2'
-                        }
-                        onSelect={(event) => event.preventDefault()}
-                    >
-                        <Plus className={inHeader ? 'size-4' : 'h-4 w-4'} />
-                        <span className="text-muted-foreground">
-                            {t('New team')}
-                        </span>
-                    </DropdownMenuItem>
-                </CreateTeamModal>
             </DropdownMenuContent>
         </DropdownMenu>
     );

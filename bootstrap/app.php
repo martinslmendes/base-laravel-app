@@ -7,6 +7,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use Stancl\Tenancy\Features\UniversalRoutes;
+use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,6 +25,9 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
             SetTeamUrlDefaults::class,
         ]);
+
+        UniversalRoutes::$identificationMiddlewares = [InitializeTenancyByRequestData::class];
+        $middleware->group('universal', []);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

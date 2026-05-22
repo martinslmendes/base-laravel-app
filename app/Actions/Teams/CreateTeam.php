@@ -4,6 +4,7 @@ namespace App\Actions\Teams;
 
 use App\Enums\TeamRole;
 use App\Models\Team;
+use App\Models\TenantUser;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,7 @@ class CreateTeam
     /**
      * Create a new team and add the user as owner.
      */
-    public function handle(User $user, string $name, bool $isPersonal = false): Team
+    public function handle(User|TenantUser $user, string $name, bool $isPersonal = false): Team
     {
         return DB::transaction(function () use ($user, $name, $isPersonal) {
             $team = Team::create([

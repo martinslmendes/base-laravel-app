@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Concerns\HasTeams;
-use Database\Factories\UserFactory;
+use Database\Factories\TenantUserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -14,19 +13,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Stancl\Tenancy\Contracts\SyncMaster;
-use Stancl\Tenancy\Database\Concerns\CentralConnection;
+use Stancl\Tenancy\Contracts\Syncable;
 use Stancl\Tenancy\Database\Concerns\ResourceSyncing;
 
 #[Fillable(['uuid', 'name', 'email', 'email_verified_at', 'password', 'current_team_id', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at', 'remember_token', 'deleted_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
-class User extends Authenticatable implements SyncMaster
+class TenantUser extends Authenticatable implements Syncable
 {
-    /** @use HasFactory<UserFactory> */
-    use CentralConnection, HasFactory, HasTeams, HasUuids, Notifiable, ResourceSyncing, SoftDeletes, TwoFactorAuthenticatable;
+    /** @use HasFactory<TenantUserFactory> */
+    use HasFactory, HasTeams, HasUuids, Notifiable, ResourceSyncing, SoftDeletes, TwoFactorAuthenticatable;
 
     protected $keyType = 'string';
     protected $primaryKey = 'uuid';
+    protected $table = 'users';
 
     /**
      * Get the attributes that should be cast.
@@ -53,11 +52,6 @@ class User extends Authenticatable implements SyncMaster
         )->using(class: TenantPivot::class);
     }
 
-    public function getTenantModelName(): string
-    {
-        return TenantUser::class;
-    }
-
     public function getGlobalIdentifierKey()
     {
         return $this->getAttribute($this->getGlobalIdentifierKeyName());
@@ -70,7 +64,7 @@ class User extends Authenticatable implements SyncMaster
 
     public function getCentralModelName(): string
     {
-        return static::class;
+        return User::class;
     }
 
     public function getSyncedAttributeNames(): array
@@ -87,4 +81,5 @@ class User extends Authenticatable implements SyncMaster
             'deleted_at',
         ];
     }
+
 }
