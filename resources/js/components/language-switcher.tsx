@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { Check, ChevronsUpDown, Languages } from 'lucide-react';
 import { useState } from 'react';
+import Flag from 'react-flagkit';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,29 +18,28 @@ type TeamSwitcherProps = {
     inHeader?: boolean;
 };
 
-type Language = { key: string; label: string };
+type Language = { flag: string; key: string; label: string };
 
 export function LanguageSwitcher({ inHeader = false }: TeamSwitcherProps) {
     const { t, i18n } = useTranslation();
     const isMobile = useIsMobile();
+    const fallbackLanguage: Language = {
+        flag: 'US',
+        key: 'en',
+        label: 'English',
+    };
     const languages: Language[] = [
+        fallbackLanguage,
         {
-            key: 'en',
-            label: 'English',
-        },
-        {
+            flag: 'BR',
             key: 'pt',
             label: 'Português',
         },
     ];
 
     const [currentLanguage, setCurrentLanguage] = useState<Language>(
-        languages.find(
-            (language) => language.key === i18n.language,
-        ) || {
-            key: 'en',
-            label: 'English',
-        },
+        languages.find((language) => language.key === i18n.language) ||
+            fallbackLanguage,
     );
 
     const switchLanguage = (language: Language) => {
@@ -81,7 +81,9 @@ export function LanguageSwitcher({ inHeader = false }: TeamSwitcherProps) {
                                     : 'truncate font-semibold'
                             }
                         >
-                            {languages.find(language => language === currentLanguage)?.label ?? 'English'}
+                            {languages.find(
+                                (language) => language === currentLanguage,
+                            )?.label ?? 'English'}
                         </span>
                     </div>
                     <ChevronsUpDown
@@ -117,6 +119,7 @@ export function LanguageSwitcher({ inHeader = false }: TeamSwitcherProps) {
                         }
                         onSelect={() => switchLanguage(language)}
                     >
+                        <Flag country={language.flag} />
                         {language.label}
                         {currentLanguage === language && (
                             <Check
