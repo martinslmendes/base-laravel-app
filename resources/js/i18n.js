@@ -7,7 +7,7 @@ i18n.use(initReactI18next).init({
     resources: {
         pt_BR: { translation: pt_BR },
     },
-    lng: localStorage.getItem('locale'),
+    lng: typeof window === 'undefined' ? 'en' : localStorage.getItem('locale'),
     interpolation: {
         escapeValue: false,
     },
