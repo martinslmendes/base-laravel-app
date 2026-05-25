@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Permission\Traits\HasRoles;
 use Stancl\Tenancy\Contracts\SyncMaster;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
 use Stancl\Tenancy\Database\Concerns\ResourceSyncing;
@@ -23,10 +24,26 @@ use Stancl\Tenancy\Database\Concerns\ResourceSyncing;
 class User extends Authenticatable implements SyncMaster
 {
     /** @use HasFactory<UserFactory> */
-    use CentralConnection, HasFactory, HasTeams, HasUuids, Notifiable, ResourceSyncing, SoftDeletes, TwoFactorAuthenticatable;
+    use CentralConnection, HasFactory, HasRoles, HasTeams, HasUuids, Notifiable, ResourceSyncing, SoftDeletes, TwoFactorAuthenticatable;
 
     protected $keyType = 'string';
     protected $primaryKey = 'uuid';
+
+    /**
+     * Get all of the teams the user belongs to.
+     *
+     * @return BelongsToMany<Team, $this>
+     */
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            related: Team::class,
+            table: 'team_members',
+            foreignPivotKey: 'user_id',
+            relatedPivotKey: 'team_id'
+        )->withPivot(['role'])
+            ->withTimestamps();
+    }
 
     /**
      * Get the attributes that should be cast.
