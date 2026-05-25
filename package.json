@@ -61,6 +61,7 @@
         "lucide-react": "1.16",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
+        "react-flagkit": "^2.0.4",
         "react-i18next": "^17.0.7",
         "sonner": "^2.0.0",
         "tailwind-merge": "^3.0.1",
