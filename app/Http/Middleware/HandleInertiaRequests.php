@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -39,7 +40,17 @@ class HandleInertiaRequests extends Middleware
 
         $locale = $request->header('locale', config('app.locale'));
 
-        app()->setLocale($locale);
+        $map = [
+            'pt' => 'pt_BR',
+            'pt-BR' => 'pt_BR',
+            'pt-br' => 'pt_BR',
+        ];
+
+        if (array_key_exists($locale, $map)) {
+            $locale = $map[$locale];
+        }
+
+        App::setLocale($locale);
 
         return [
             ...parent::share($request),

@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/react';
-import { Check, ChevronsUpDown, Globe } from 'lucide-react';
+import { Check, ChevronsUpDown, Languages } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -28,14 +28,14 @@ export function LanguageSwitcher({ inHeader = false }: TeamSwitcherProps) {
             label: 'English',
         },
         {
-            key: 'pt_BR',
-            label: 'Português Brasileiro',
+            key: 'pt',
+            label: 'Português',
         },
     ];
 
     const [currentLanguage, setCurrentLanguage] = useState<Language>(
         languages.find(
-            (language) => language.key === localStorage.getItem('locale'),
+            (language) => language.key === i18n.language,
         ) || {
             key: 'en',
             label: 'English',
@@ -44,7 +44,6 @@ export function LanguageSwitcher({ inHeader = false }: TeamSwitcherProps) {
 
     const switchLanguage = (language: Language) => {
         setCurrentLanguage(language);
-        localStorage.setItem('locale', language.key);
         i18n.changeLanguage(language.key).then(() => {
             router.reload();
         });
@@ -62,7 +61,7 @@ export function LanguageSwitcher({ inHeader = false }: TeamSwitcherProps) {
                             : 'w-full justify-start px-2 has-[>svg]:px-2 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                     }
                 >
-                    <Globe
+                    <Languages
                         className={cn(
                             !inHeader &&
                                 'size-4 shrink-0 group-data-[collapsible=icon]:block',
