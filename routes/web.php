@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Central\UserController;
 use App\Http\Controllers\Teams\TeamInvitationController;
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,7 @@ Route::middleware(['universal', InitializeTenancyByRequestData::class])->group(f
         ->middleware(['auth', 'verified', EnsureTeamMembership::class])
         ->group(function () {
             Route::inertia('dashboard', 'dashboard')->name('dashboard');
+            Route::resource(name: 'users', controller: UserController::class)->except(['show']);
         });
 
     Route::middleware(['auth'])->group(function () {
