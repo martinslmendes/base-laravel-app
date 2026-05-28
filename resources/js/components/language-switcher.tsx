@@ -119,7 +119,7 @@ export function LanguageSwitcher({ inHeader = false }: TeamSwitcherProps) {
                         }
                         onSelect={() => switchLanguage(language)}
                     >
-                        <Flag country={language.flag} />
+                        <Flag className="rounded-sm" country={language.flag} />
                         {language.label}
                         {currentLanguage === language && (
                             <Check
